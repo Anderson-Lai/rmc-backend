@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 class Email {
-    constructor(fromHeading: string, to: string[], subject: string, text: string, 
+    public constructor(fromHeading: string, to: string[], subject: string, text: string, 
         username: string, password: string, smtp: string) {
         this._fromHeading = fromHeading;
         this._to = to;
