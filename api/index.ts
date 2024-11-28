@@ -25,7 +25,7 @@ function main() {
             if (!producerEmail || !eventName || !eventDate || !eventSignificance
                 || !eventPortrayal || !mediaBreakdown) {
                 res.sendStatus(400);
-                console.log("if in")
+                return;
             }
 
             const emailService = nodemailer.createTransport({
