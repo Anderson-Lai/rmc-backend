@@ -38,6 +38,8 @@ function main() {
                 secure: false,
                 logger: true,
                 debug: true,
+                connectionTimeout: 7500,
+                greetingTimeout: 7500,
                 auth: {
                     user: process.env.EMAIL_USERNAME,
                     pass: process.env.EMAIL_PASSWORD
