@@ -1,10 +1,10 @@
 import nodemailer from "nodemailer";
 
 class Email {
-    public constructor(fromHeading: string, to: string[], subject: string, text: string, 
+    public constructor(fromHeading: string, recipients: string[], subject: string, text: string, 
         username: string, password: string, smtp: string) {
         this._fromHeading = fromHeading;
-        this._to = to;
+        this._recipients = recipients;
         this._subject = subject;
         this._text = text;
         this._username = username;
@@ -40,7 +40,7 @@ class Email {
             });
         });
 
-        for (const recipient of this._to) {
+        for (const recipient of this._recipients) {
             const emailOptions = {
                 from: this._fromHeading,
                 to: recipient,
@@ -67,7 +67,7 @@ class Email {
     }
 
     private _fromHeading: string;
-    private _to: string[];
+    private _recipients: string[];
     private _subject: string;
     private _text: string;
     private _username: string;
