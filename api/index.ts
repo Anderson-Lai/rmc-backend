@@ -32,9 +32,8 @@ function main() {
             }
 
             const emailService = nodemailer.createTransport({
-                host: "smtp.google.com",
-                port: 587,
-                secure: false,
+                host: "smtp.gmail.com",
+                port: 465,
                 logger: true,
                 debug: true,
                 connectionTimeout: 7500,
@@ -43,6 +42,19 @@ function main() {
                     user: process.env.EMAIL_USERNAME,
                     pass: process.env.EMAIL_PASSWORD
                 }
+            });
+
+            await new Promise((resolve, reject) => {
+                // verify connection configuration
+                emailService.verify((error, success) => {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                    } else {
+                        console.log("Server is ready to take our messages");
+                        resolve(success);
+                    }
+                });
             });
 
             const emailOptions = {
@@ -58,7 +70,7 @@ function main() {
                 Rough breakdown: ${mediaBreakdown}\n`
             };
 
-            await new Promise((success, reject) => {
+            await new Promise((resolve, reject) => {
                 emailService.sendMail(emailOptions, (err, info) => {
                     if (err) {
                         console.error(`An error occured during emailing: ${err}`);
@@ -66,7 +78,7 @@ function main() {
                     }
                     else {
                         console.log(`Email was successfully sent: ${info.response}`);
-                        success(info); 
+                        resolve(info); 
                     }
                 })
             });
