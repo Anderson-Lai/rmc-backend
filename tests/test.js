@@ -1,18 +1,22 @@
+const URL = "http://localhost:3000/form";
+const DATA = {
+    producerEmail: "andersonmhlai26@gmail.com",
+    eventName: "going to school!",
+    eventDate: "today",
+    eventSignificance: "i get to learn",
+    eventPortrayal: "i will be recording a titration lab in class",
+    mediaBreakdown: "add 0.5M barium hydroxide to HCl"
+};
+const HEADER = {
+    "Content-Type": "application/json"
+}
+
 async function testEmailing() {
     try {
-        const response = await fetch("http://localhost:3000/form", {
+        const response = await fetch(URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                producerEmail: "andersonmhlai26@gmail.com",
-                eventName: "going to school!",
-                eventDate: "today",
-                eventSignificance: "i get to learn",
-                eventPortrayal: "i will be recording a titration lab in class",
-                mediaBreakdown: "add 0.5M barium hydroxide to HCl"
-            })
+            headers: HEADER,
+            body: JSON.stringify(DATA)
         });
 
         if (!response.ok) {
@@ -28,21 +32,12 @@ async function testEmailing() {
 }
 
 async function testRateLimit() {
-    try {
-        for (let i = 0; i < 10; i++) {
-            const response = await fetch("http://localhost:3000/form", {
+    for (let i = 0; i < 50; i++) {
+        try {
+            const response = await fetch(URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    producerEmail: "andersonmhlai26@gmail.com",
-                    eventName: "going to school!",
-                    eventDate: "today",
-                    eventSignificance: "i get to learn",
-                    eventPortrayal: "i will be recording a titration lab in class",
-                    mediaBreakdown: "add 0.5M barium hydroxide to HCl"
-                })
+                headers: HEADER, 
+                body: JSON.stringify(DATA)
             });
 
             if (!response.ok) {
@@ -52,9 +47,9 @@ async function testRateLimit() {
                 console.log(`Email successfully sent; status code: ${response.status}`);
             }
         }
-    }
-    catch (e) {
-        console.error(e);
+        catch (e) {
+            console.error(e);
+        }
     }
 }
 

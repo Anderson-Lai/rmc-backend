@@ -1,20 +1,24 @@
+const ITERATIONS = 1;
+const URL = "https://rmc-backend.vercel.app/form";
+const HEADER = {
+    "Content-Type": "application/json"
+};
+const DATA = {
+    producerEmail: "andersonmhlai26@gmail.com",
+    eventName: "testing automatic emailing on vercel deployment",
+    eventDate: "today",
+    eventSignificance: "i get to learn",
+    eventPortrayal: "i will be recording a titration lab in class",
+    mediaBreakdown: "add 0.5M barium hydroxide to HCl"
+}
+
 async function testEmailing() {
-    const ITERATIONS = 1;
     try {
         for (let i = 0; i < ITERATIONS; i++) {
-            const response = await fetch("https://rmc-backend.vercel.app/form", {
+            const response = await fetch(URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    producerEmail: "andersonmhlai26@gmail.com",
-                    eventName: "testing automatic emailing on vercel deployment",
-                    eventDate: "today",
-                    eventSignificance: "i get to learn",
-                    eventPortrayal: "i will be recording a titration lab in class",
-                    mediaBreakdown: "add 0.5M barium hydroxide to HCl"
-                })
+                headers: HEADER,
+                body: JSON.stringify(DATA)
             });
 
             if (!response.ok) {
