@@ -10,7 +10,6 @@ function main() {
 
     // middleware
     app.set("trust proxy", 1); // trust vercel
-    app.use(rateLimiter);
     app.use(express.json());
 
     app.listen(port, () => {
@@ -23,7 +22,7 @@ function main() {
         });
     });
 
-    app.post("/form", (req, res) => {
+    app.post("/form", rateLimiter, async (req, res) => {
         try {
             const { producerEmail, eventName, eventDate, eventSignificance, eventPortrayal, mediaBreakdown } = req.body;
             if (!producerEmail || !eventName || !eventDate || !eventSignificance
@@ -59,14 +58,18 @@ function main() {
                 Rough breakdown: ${mediaBreakdown}\n`
             };
 
-            emailService.sendMail(emailOptions, (err, info) => {
-                if (err) {
-                    console.error(`An error occured during emailing: ${err}`);
-                }
-                else {
-                    console.log(`Email was successfully sent: ${info.response}`);
-                }
-            })
+            await new Promise((success, reject) => {
+                emailService.sendMail(emailOptions, (err, info) => {
+                    if (err) {
+                        console.error(`An error occured during emailing: ${err}`);
+                        reject(err);
+                    }
+                    else {
+                        console.log(`Email was successfully sent: ${info.response}`);
+                        success(info); 
+                    }
+                })
+            });
 
             res.sendStatus(200);
         }
