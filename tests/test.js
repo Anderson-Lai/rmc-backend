@@ -11,7 +11,7 @@ async function testEmailing() {
                 eventDate: "today",
                 eventSignificance: "i get to learn",
                 eventPortrayal: "i will be recording a titration lab in class",
-                //mediaBreakdown: "add 0.5M barium hydroxide to HCl"
+                mediaBreakdown: "add 0.5M barium hydroxide to HCl"
             })
         });
 

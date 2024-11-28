@@ -38,7 +38,7 @@ function main() {
 
             const emailOptions = {
                 from: `RMC automatic emailing ${process.env.EMAIL_USERNAME}`,
-                to: "andersonmhlai26@gmail.com",
+                to: process.env.EMAIL_RECIPIENT_USERNAME,
                 subject: `Pitch Proposal for ${eventName} by ${producerEmail}`,
                 text: `A new form submission has been completed on the website with the following details:\n\
                 Email of producer: ${producerEmail}\n\
