@@ -9,6 +9,7 @@ function main() {
     const port = Number(process.env.PORT) || 2957;
 
     // middleware
+    app.set("trust proxy", 1); // trust vercel
     app.use(rateLimiter);
     app.use(express.json());
 
