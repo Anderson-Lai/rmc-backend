@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
-import nodemailer from "nodemailer";
 import rateLimiter from "./ratelimiter";
+import Email from "./email";
 
 function main() {
     const app = express();
@@ -31,57 +31,22 @@ function main() {
                 return;
             }
 
-            const emailService = nodemailer.createTransport({
-                host: "smtp.gmail.com",
-                port: 465,
-                logger: true,
-                debug: true,
-                connectionTimeout: 7500,
-                greetingTimeout: 7500,
-                auth: {
-                    user: process.env.EMAIL_USERNAME,
-                    pass: process.env.EMAIL_PASSWORD
-                }
-            });
-
-            await new Promise((resolve, reject) => {
-                // verify connection configuration
-                emailService.verify((error, success) => {
-                    if (error) {
-                        console.log(error);
-                        reject(error);
-                    } else {
-                        console.log("Server is ready to take our messages");
-                        resolve(success);
-                    }
-                });
-            });
-
-            const emailOptions = {
-                from: `RMC automatic emailing ${process.env.EMAIL_USERNAME}`,
-                to: process.env.EMAIL_RECIPIENT_USERNAME,
-                subject: `Pitch Proposal for ${eventName} by ${producerEmail}`,
-                text: `A new form submission has been completed on the website with the following details:\n\
+            const emailer = new Email(`RMC Automatic Emailing <${process.env.EMAIL_USERNAME}`,
+                [process.env.EMAIL_RECIPIENT_USERNAME || ""],
+                `Pitch Proposal for '${eventName}' by ${producerEmail}`,
+                `A new form submission has been completed on the website with the following details:\n\
                 Email of producer: ${producerEmail}\n\
                 Name of event: ${eventName}\n\
                 Date of event: ${eventDate}\n\
                 Event significance: ${eventSignificance}\n\
                 Event portrayal: ${eventPortrayal}\n\
-                Rough breakdown: ${mediaBreakdown}\n`
-            };
+                Rough breakdown: ${mediaBreakdown}\n`,
+                process.env.EMAIL_USERNAME || "",
+                process.env.EMAIL_PASSWORD || "",
+                "smtp.gmail.com"
+            )
 
-            await new Promise((resolve, reject) => {
-                emailService.sendMail(emailOptions, (err, info) => {
-                    if (err) {
-                        console.error(`An error occured during emailing: ${err}`);
-                        reject(err);
-                    }
-                    else {
-                        console.log(`Email was successfully sent: ${info.response}`);
-                        resolve(info); 
-                    }
-                })
-            });
+            await emailer.sendEmail();
 
             res.sendStatus(200);
         }

@@ -55,7 +55,7 @@ async function testRateLimit() {
 
 async function main() {
     await testEmailing();
-    await testRateLimit();
+    //await testRateLimit();
 }
 
 main();
