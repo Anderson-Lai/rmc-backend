@@ -33,7 +33,11 @@ function main() {
             }
 
             const emailService = nodemailer.createTransport({
-                service: "gmail",
+                host: "smtp.google.com",
+                port: 587,
+                secure: false,
+                logger: true,
+                debug: true,
                 auth: {
                     user: process.env.EMAIL_USERNAME,
                     pass: process.env.EMAIL_PASSWORD
