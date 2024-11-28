@@ -2,11 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import nodemailer from "nodemailer";
+import rateLimiter from "./ratelimiter";
 
 function main() {
     const app = express();
     const port = Number(process.env.PORT) || 2957;
 
+    // middleware
+    app.use(rateLimiter);
     app.use(express.json());
 
     app.listen(port, () => {
