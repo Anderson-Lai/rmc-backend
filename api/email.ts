@@ -40,6 +40,7 @@ class Email {
             });
         });
 
+        const promises = [];
         for (const recipient of this._recipients) {
             const emailOptions = {
                 from: this._fromHeading,
@@ -48,7 +49,7 @@ class Email {
                 text: this._text
             };
 
-            await new Promise((resolve, reject) => {
+            promises.push(new Promise((resolve, reject) => {
                 emailService.sendMail(emailOptions, (err, info) => {
                     if (err) {
                         console.error(`An error occured during emailing: ${err}`);
@@ -60,7 +61,15 @@ class Email {
                         resolve(info); 
                     }
                 });
-            });
+            }));
+        }
+
+        try {
+            await Promise.all(promises);
+        }
+        catch (e) {
+            console.error(e);
+            return false;
         }
 
         return true;
