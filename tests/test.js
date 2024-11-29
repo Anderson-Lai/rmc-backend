@@ -1,7 +1,8 @@
 const URL = "http://localhost:3000/form";
 const DATA = {
-    producerEmail: "andersonmhlai26@gmail.com",
-    eventName: "going to school!",
+    producerName: "Anderson Lai",
+    producerEmail: "anderson.lai26@ycdsbk12.ca",
+    eventName: "chemistry lab",
     eventDate: "today",
     eventSignificance: "i get to learn",
     eventPortrayal: "i will be recording a titration lab in class",

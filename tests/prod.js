@@ -4,7 +4,8 @@ const HEADER = {
     "Content-Type": "application/json"
 };
 const DATA = {
-    producerEmail: "andersonmhlai26@gmail.com",
+    producerName: "Anderson Lai",
+    producerEmail: "anderson.lai26@ycdsbk12.ca",
     eventName: "testing automatic emailing on vercel deployment",
     eventDate: "today",
     eventSignificance: "i get to learn",

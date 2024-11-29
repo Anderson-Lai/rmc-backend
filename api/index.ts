@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import rateLimiter from "./ratelimiter";
 import Email from "./email";
+import { isValidEmail } from "./validate";
 
 function main() {
     const app = express();
@@ -25,10 +26,10 @@ function main() {
     app.post("/form", rateLimiter, async (req, res) => {
         try {
             const { producerEmail, eventName, eventDate, 
-                eventSignificance, eventPortrayal, mediaBreakdown } = req.body;
+                eventSignificance, eventPortrayal, mediaBreakdown, producerName } = req.body;
 
-            if (!producerEmail || !eventName || !eventDate || !eventSignificance
-                || !eventPortrayal || !mediaBreakdown) {
+            if (!producerEmail || !isValidEmail(producerEmail) || !eventName || !eventDate || !eventSignificance
+                || !eventPortrayal || !mediaBreakdown || !producerName) {
                 res.sendStatus(400);
                 return;
             }
@@ -36,16 +37,20 @@ function main() {
             const username = process.env.EMAIL_USERNAME || "";
             const password = process.env.EMAIL_PASSWORD || "";
             const recipient = process.env.EMAIL_RECIPIENT_USERNAME || "";
+
             const fromHeading = `RMC Automatic Emailing <${username}>`;
             const recipients = [recipient];
-            const subject = `Pitch Proposal for ${eventName} by ${producerEmail}`;
-            const text = `A new form submission has been completed on the website with the following details:\n\
-                Email of producer: ${producerEmail}\n\
-                Name of event: ${eventName}\n\
-                Date of event: ${eventDate}\n\
-                Event significance: ${eventSignificance}\n\
-                Event portrayal: ${eventPortrayal}\n\
-                Rough breakdown: ${mediaBreakdown}\n`;
+            const subject = `New Pitch Proposal for '${eventName}' by ${producerName}`;
+
+            const text = `A new pitch proposal has been completed on the website with the following details:\n\n` + 
+                `Name of producer:\n${producerName}\n\n` + 
+                `Email of producer:\n${producerEmail}\n\n` +
+                `Name of event:\n${eventName}\n\n` + 
+                `Date of event:\n${eventDate}\n\n` +
+                `Event significance:\n${eventSignificance}\n\n` +
+                `Event portrayal:\n${eventPortrayal}\n\n` +
+                `Rough breakdown:\n${mediaBreakdown}\n\n`;
+
             const smtp = "smtp.gmail.com";
 
             const emailer = new Email(fromHeading, recipients, subject, text, username, password, smtp);
