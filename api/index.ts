@@ -4,6 +4,7 @@ dotenv.config();
 import rateLimiter from "./ratelimiter";
 import Email from "./email";
 import { isValidEmail } from "./validate";
+import cors from "cors";
 
 function main() {
     const app = express();
@@ -11,6 +12,7 @@ function main() {
 
     // middleware
     app.set("trust proxy", 1); // trust vercel
+    app.use(cors());
     app.use(express.json());
 
     app.listen(port, () => {
