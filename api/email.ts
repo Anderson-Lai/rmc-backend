@@ -1,56 +1,35 @@
 import nodemailer from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-class Email {
-    public constructor(fromHeading: string, recipients: string[], subject: string, text: string, 
-        username: string, password: string, smtp: string) {
-        this._fromHeading = fromHeading;
-        this._recipients = recipients;
-        this._subject = subject;
-        this._text = text;
-        this._username = username;
+export default class Email {
+    public constructor(emailAddress: string, password: string, smtp: string) {
+        this._emailAddress = emailAddress;
         this._password = password;
-        this._smtp = smtp; 
-    }  
+        this._smtp = smtp;
+    }
 
-    public async sendEmail(): Promise<boolean> {
-        const emailService = nodemailer.createTransport({
-            host: this._smtp,
-            port: 465,
-            logger: true,
-            debug: true,
-            connectionTimeout: 7500,
-            greetingTimeout: 7500,
-            auth: {
-                user: this._username,
-                pass: this._password
-            }
-        });
+    public async sendEmail(fromHeading: string, recipients: string[],
+        subject: string, text: string) {
 
-        await new Promise((resolve, reject) => {
-            emailService.verify((error, success) => {
-                if (error) {
-                    console.error(error);
-                    reject(error);
-                    return false;
-                } 
-                else {
-                    console.log("Server is ready to take our messages");
-                    resolve(success);
-                }
-            });
-        });
+        const transporter = this.createTransporter();
+        if (!this.verifyServer(transporter)) {
+            console.error(`Could not connect to ${this._smtp}. Emailing will not continue.`);
+            return false;
+        }
 
+        // start emailing all the recipients and
+        // gather the promises in an array
         const promises = [];
-        for (const recipient of this._recipients) {
+        for (const recipient of recipients) {
             const emailOptions = {
-                from: this._fromHeading,
+                from: fromHeading,
                 to: recipient,
-                subject: this._subject,
-                text: this._text
+                subject: subject,
+                text: text
             };
 
             promises.push(new Promise((resolve, reject) => {
-                emailService.sendMail(emailOptions, (err, info) => {
+                transporter.sendMail(emailOptions, (err, info) => {
                     if (err) {
                         console.error(`An error occured during emailing: ${err}`);
                         reject(err);
@@ -64,6 +43,7 @@ class Email {
             }));
         }
 
+        // await all the emails in progress concurrently
         try {
             await Promise.all(promises);
         }
@@ -75,13 +55,42 @@ class Email {
         return true;
     }
 
-    private _fromHeading: string;
-    private _recipients: string[];
-    private _subject: string;
-    private _text: string;
-    private _username: string;
+    private createTransporter() {
+        return nodemailer.createTransport({
+            host: this._smtp,
+            port: 465,
+            logger: true,
+            debug: true,
+            connectionTimeout: 7500,
+            greetingTimeout: 7500,
+            auth: {
+                user: this._emailAddress,
+                pass: this._password
+            }
+        });
+    }
+
+    private async verifyServer(transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options>): Promise<boolean> {
+        try {
+            await new Promise((resolve, reject) => {
+                transporter.verify((error, success) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    
+                    console.log("Server is ready to take receive an email.");
+                    resolve(success);
+                })
+            });
+            return true;
+        }
+        catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    private _emailAddress: string;
     private _password: string;
     private _smtp: string;
 }
-
-export default Email;
