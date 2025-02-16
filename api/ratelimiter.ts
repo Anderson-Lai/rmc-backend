@@ -6,6 +6,6 @@ const rateLimiter = rateLimit({
     message: "You have the maximum requests per day",
     standardHeaders: true,
     legacyHeaders: true,
-})
+});
 
 export default rateLimiter;

@@ -15,7 +15,7 @@ export default async function form(req: Request, res: Response) {
 
         const emailAddress = process.env.EMAIL_ADDRESS || "";
         const password = process.env.EMAIL_PASSWORD || "";
-        const smtp = "smtp.gmail.com";
+        const smtp = process.env.SMTP || "";
 
         const recipient = process.env.EMAIL_RECIPIENT_ADDRESS || "";
 
