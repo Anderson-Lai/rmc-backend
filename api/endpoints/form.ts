@@ -33,7 +33,7 @@ export default async function form(req: Request, res: Response) {
             `Rough breakdown:\n${mediaBreakdown}\n\n`;
 
         const emailer = new Email(emailAddress, password, smtp);
-        if (!await emailer.sendEmail(fromHeading, recipients, subject, text,)) {
+        if (!await emailer.sendEmail(fromHeading, recipients, subject, text)) {
             throw new Error("An error occurred while emailing.");
         }
 
