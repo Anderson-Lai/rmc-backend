@@ -30,11 +30,12 @@ export default async function rateLimiter(req: Request, res: Response, next: Nex
         const requests = await redis.incr(key);
 
         if (requests === 1) {
-          await redis.expire(key, 60 * 60 *24); // store for 1 day
+          await redis.expire(key, 60 * 60 * 24); // store for 1 day
         }
 
         if (requests >= 25) {
             res.status(429).json({ error: "Too many requests" });
+            return;
         }
 
         next(); 
