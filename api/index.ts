@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import rateLimiter from "./ratelimiter";
 import cors from "cors";
-import form from "./routes/form";
-import root from "./routes/root";
+import form from "./endpoints/form";
+import root from "./endpoints/root";
 
 function main() {
     const app = express();
