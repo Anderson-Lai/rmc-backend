@@ -7,10 +7,6 @@ export default async function form(req: Request, res: Response) {
         const { producerEmail, eventName, eventDate, eventSignificance, 
             eventPortrayal, mediaBreakdown, producerName } = req.body;
 
-        if (producerEmail === "anderson.lai26@ycdsbk12.ca") {
-            throw new Error("Anderson does not send pitch forms; this is not anderson.")
-        }
-
         if (!producerEmail || !isValidEmail(producerEmail) || !eventName || !eventDate 
             || !eventSignificance || !eventPortrayal || !mediaBreakdown || !producerName) {
             res.sendStatus(400);
