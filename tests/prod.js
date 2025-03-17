@@ -1,4 +1,4 @@
-const ITERATIONS = 1;
+const ITERATIONS = 50;
 const URL = "https://rmc-backend.vercel.app/form";
 const HEADER = {
     "Content-Type": "application/json"
